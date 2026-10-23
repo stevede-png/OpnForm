@@ -6,13 +6,28 @@ services:
       - opnform_storage:/usr/share/nginx/html/storage:rw
     environment: &api-env
       APP_ENV: production
+      APP_NAME: ${APP_NAME:-OpnForm}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      APP_KEY: ${APP_KEY:?Set a persistent APP_KEY in Coolify}
+      APP_URL: ${APP_URL:?Set the public URL in Coolify, e.g. https://forms.example.com}
+      FRONT_URL: ${FRONT_URL:-${APP_URL}}
+      APP_LOG_LEVEL: ${APP_LOG_LEVEL:-error}
+      FRONT_API_SECRET: ${FRONT_API_SECRET:?Set a strong shared secret in Coolify}
       # Database settings
       DB_HOST: db
-      REDIS_HOST: redis
+      DB_PORT: 5432
       DB_DATABASE: ${DB_DATABASE:-forge}
       DB_USERNAME: ${DB_USERNAME:-forge}
-      DB_PASSWORD: ${DB_PASSWORD:-forge}
+      DB_PASSWORD: ${DB_PASSWORD:?Set a strong database password in Coolify}
       DB_CONNECTION: ${DB_CONNECTION:-pgsql}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      # Application services
+      CACHE_DRIVER: ${CACHE_DRIVER:-file}
+      SESSION_DRIVER: ${SESSION_DRIVER:-file}
+      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-sync}
+      FILESYSTEM_DRIVER: ${FILESYSTEM_DRIVER:-local}
+      JWT_SECRET: ${JWT_SECRET:?Set a unique JWT_SECRET in Coolify}
       # PHP Configuration
       PHP_MEMORY_LIMIT: "1G"
       PHP_MAX_EXECUTION_TIME: "600"
@@ -67,6 +82,12 @@ services:
     image: jhumanj/opnform-client:latest
     env_file:
       - ./client/.env
+    environment:
+      NUXT_PUBLIC_APP_URL: ${NUXT_PUBLIC_APP_URL:-${APP_URL}}
+      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE:-/api}
+      NUXT_PRIVATE_API_BASE: ${NUXT_PRIVATE_API_BASE:-http://ingress/api}
+      NUXT_API_SECRET: ${FRONT_API_SECRET}
+      NUXT_PUBLIC_ENV: ${NUXT_PUBLIC_ENV:-production}
     depends_on:
       api:
         condition: service_healthy
@@ -92,7 +113,7 @@ services:
     environment:
       POSTGRES_DB: ${DB_DATABASE:-forge}
       POSTGRES_USER: ${DB_USERNAME:-forge}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-forge}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Set a strong database password in Coolify}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
       interval: 30s
