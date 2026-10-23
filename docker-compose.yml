@@ -101,9 +101,9 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
   ingress:
-    image: nginx:1
-    volumes:
-      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    build:
+      context: .
+      dockerfile: docker/nginx.Dockerfile
     expose:
       - "80"
     depends_on:
