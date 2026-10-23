@@ -2,7 +2,6 @@
 services:
   api: &api-environment
     image: jhumanj/opnform-api:latest
-    ##container_name: opnform-api-v2
     volumes: &api-environment-volumes
       - opnform_storage:/usr/share/nginx/html/storage:rw
     environment: &api-env
@@ -35,7 +34,6 @@ services:
 
   api-worker:
     <<: *api-environment
-    container_name: opnform-api-worker
     command: ["php", "artisan", "queue:work"]
     environment:
       <<: *api-env
@@ -50,7 +48,6 @@ services:
 
   api-scheduler:
     <<: *api-environment
-    container_name: opnform-api-scheduler
     command: ["php", "artisan", "schedule:work"]
     environment:
       <<: *api-env
@@ -68,7 +65,6 @@ services:
 
   ui:
     image: jhumanj/opnform-client:latest
-    container_name: opnform-client
     env_file:
       - ./client/.env
     depends_on:
@@ -84,7 +80,6 @@ services:
 
   redis:
     image: redis:7
-    container_name: opnform-redis
     volumes:
       - redis-data:/data
     healthcheck:
@@ -94,7 +89,6 @@ services:
 
   db:
     image: postgres:16
-    container_name: opnform-db
     environment:
       POSTGRES_DB: ${DB_DATABASE:-forge}
       POSTGRES_USER: ${DB_USERNAME:-forge}
@@ -108,11 +102,10 @@ services:
 
   ingress:
     image: nginx:1
-    container_name: opnform-ingress
     volumes:
       - ./docker/nginx.conf:/etc/nginx/templates/default.conf.template
-    ##ports:
-      ##- 80:80
+    expose:
+      - "80"
     environment:
       - NGINX_MAX_BODY_SIZE=64m
     depends_on:
