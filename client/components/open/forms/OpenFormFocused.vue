@@ -90,8 +90,6 @@
           <UButton color="form" square variant="solid" icon="i-heroicons-chevron-down-20-solid" :disabled="isLast" @click="goNext" />
         </div>
       </Transition>
-      <!-- Branding button -->
-      <PoweredBy v-if="!form.no_branding && showBranding" :color="form.color" />
     </div>
   </form>
 </template>
@@ -107,7 +105,6 @@ import OpenFormButton from './OpenFormButton.vue'
 import SlidingTransition from '../../global/transitions/SlidingTransition.vue'
 import { FormMode } from '~/lib/forms/FormModeStrategy.js'
 import { useFormImagePreloader } from '~/composables/forms/useFormImagePreloader.js'
-import PoweredBy from '~/components/pages/forms/show/PoweredBy.vue'
 
 const props = defineProps({
   formManager: { type: Object, required: true }
