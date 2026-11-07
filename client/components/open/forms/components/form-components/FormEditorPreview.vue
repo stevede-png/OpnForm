@@ -391,8 +391,4 @@ function handleDeleteCurrent() {
 
 <style>
 @reference '../../../../../css/app.css';
-
-.form-editor-preview .powered-by-button {
-  @apply bottom-10 right-10 z-50;
-}
 </style>
