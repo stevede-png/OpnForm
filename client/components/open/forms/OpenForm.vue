@@ -138,7 +138,7 @@
     </div>
 
     <!-- Branding button -->
-    <div v-if="!form.no_branding && showBranding" class="fixed z-10 bottom-4 right-4">
+    <div v-if="false" class="fixed z-10 bottom-4 right-4">
       <PoweredBy :color="form.color" />
     </div>
   </form>
@@ -245,3 +245,6 @@ const getFieldWidthClasses = (width) => {
   return 'col-span-full'
 }
 
+  // Branding display control comes from strategy; default to true
+const showBranding = computed(() => props.formManager?.strategy?.value?.display?.showBranding ?? false)
+</script>
